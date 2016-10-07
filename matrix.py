@@ -1,4 +1,5 @@
 from vector import Vector
+from exceptions import DimensionError
 
 class Matrix(object):
     def __init__(self, rows = 0, cols = 0, copy = None):
@@ -33,40 +34,43 @@ class Matrix(object):
         return self.__str__()
 
     def __add__(self, B):
-        return self.addition(self, B)
+        return self._addition(self, B)
 
     def __radd__(self, B):
-        return self.addition(self, B)
+        return self._addition(self, B)
 
     def __iadd__(self, B):
-        pass
+        return self + B
 
     def __sub__(self, B):
-        return self.subtraction(self, B)
+        return self._subtraction(self, B)
 
     def __rsub__(self, B):
-        return self.subtraction(B, self)
+        return self._subtraction(B, self)
 
     def __isub__(self, B):
-        pass
+        return self - B
 
     def __mul__(self, B):
-        pass
+        return self._multiplication(self, B)
 
     def __rmul__(self, B):
-        pass
+        return self._multiplication(B, self)
 
     def __imul__(self, B):
-        pass
+        return self * B
 
-    def scalar_mult(self, k, A):
+    def __pow__(self, x):
+        return self._power(self, x)
+
+    def _scalar_mult(self, k, A):
         B = Matrix(rows = A.num_rows(), cols = A.num_cols())
         for m in range(len(A)):
             for n in range(len(A[m])):
                 B[m][n] = A[m][n] * k
         return B
 
-    def addition(self, A, B):
+    def _addition(self, A, B):
         if len(A) != len(B) and len(A[0]) != len(B[0]):
             raise DimensionError("Dimensions do not match")
         C = Matrix(rows = len(A), cols = len(A[0]))
@@ -75,9 +79,9 @@ class Matrix(object):
                 C[m][n] = A[m][n] + B[m][n]
         return C
 
-    def subtraction(self, A, B):
-        t = self.scalar_mult(-1, B)
-        return self.addition(A, t)
+    def _subtraction(self, A, B):
+        t = self._scalar_mult(-1, B)
+        return self._addition(A, t)
 
     def transpose(self):
         B = Matrix(rows = self.num_cols(), cols = self.num_rows())
@@ -86,8 +90,39 @@ class Matrix(object):
                 B[n][m] = self[m][n]
         return B
 
+    def _multiplication(self, A, B):
+        if A.num_cols() != B.num_rows():
+            raise DimensionError("The dimensions of the two matrices do not match.")
+        if type(B) is int:
+            return self._scalar_mult(B, A)
+        C = Matrix(rows = A.num_rows(), cols = B.num_cols())
+        for i in range(A.num_rows()):
+            for j in range(B.num_cols()):
+                el_sum = 0
+                for k in range(A.num_cols()):
+                    el_sum += A[i][k] * B[k][j]
+                C[i][j] = el_sum
+        return C
 
+    def _power(self, A, k):
+        if k < 0:
+            raise ValueError("Power cannot be less than 0.")
+        if k == 0:
+            C = Matrix(rows = A.num_rows(), cols = A.num_cols())
+            for i in range(C.num_rows()):
+                C[i][i] = 1
+            return C
+        C = Matrix(copy = A)
+        for i in range(k - 1):
+            C = C * A
+        return C
 
+    def _row_op_scalar_mult(self, A, row, k):
+        pass
 
+    def _row_op_swap(self, A, row_i, row_j):
+        pass
 
-
+    def _row_op_factor_mult(self, A, row_i, row_j, k):
+        pass
+        
