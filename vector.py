@@ -71,10 +71,10 @@ class Vector(object):
         return self._addition(A, t)
 
     def _multiplication(self, A, B):
+        if type(B) is int or type(B) is float:
+            return self._scalar_mult(B, A)
         if len(A) != len(B):
             raise DimensionError("The dimensions of the two matrices do not match.")
-        if type(B) is int:
-            return self._scalar_mult(B, A)
         val = 0
         for m in range(len(A)):
             val += A[m] * B[m]

@@ -6,14 +6,13 @@ class Matrix(object):
         if copy is not None:
             if type(copy) is not list and type(copy) is not Matrix:
                 raise TypeError("copy is not of type list or Matrix.")
-
         self._m = []
         for m in range(len(copy) if copy else rows):
             self._m.append(Vector())
-            for n in range(len(copy) if copy else cols):
+            for n in range(len(copy[m]) if copy else cols):
                 self._m[m].append(copy[m][n] if copy else 0)
         self._rows = len(copy) if copy else rows
-        self._cols = len(copy) if copy else cols
+        self._cols = len(copy[m]) if copy else cols
 
     def num_rows(self):
         return self._rows
@@ -23,6 +22,9 @@ class Matrix(object):
 
     def __getitem__(self, x):
         return self._m[x]
+
+    def __setitem__(self, key, value):
+        self._m[key] = value
 
     def __len__(self):
         return len(self._m)
@@ -71,7 +73,7 @@ class Matrix(object):
         return B
 
     def _addition(self, A, B):
-        if len(A) != len(B) and len(A[0]) != len(B[0]):
+        if A.num_rows() != B.num_rows() or A.num_cols() != B.num_cols():
             raise DimensionError("Dimensions do not match")
         C = Matrix(rows = len(A), cols = len(A[0]))
         for m in range(A.num_rows()):
@@ -117,12 +119,36 @@ class Matrix(object):
             C = C * A
         return C
 
-    def _row_op_scalar_mult(self, A, row, k):
-        pass
+    def _row_op_scalar_mult(self, A, row_i, k):
+        v = Vector(copy = A[row_i])
+        return v * k
 
     def _row_op_swap(self, A, row_i, row_j):
         pass
 
-    def _row_op_factor_mult(self, A, row_i, row_j, k):
+    def _row_op_factor_add(self, A, from_i, to_i, k):
+        v = Vector(copy = A[to_i])
+        v += A[from_i] * k
+        return v
+
+    def gauss_jordan_elimination(self):
+        B = Matrix(copy = self)
+        for i in range(len(B)):
+            B[i] = self._row_op_scalar_mult(B, i, 1 / B[i][i])
+            for j in range(len(B)):
+                if j == i:
+                    continue
+                sign = 1 if B[i][i] < 0 == B[j][i] < 0 else -1
+                B[j] = self._row_op_factor_add(B, i, j, sign * B[j][i] / B[i][i])
+        return B
+
+
+class SquareMatrix(Matrix):
+    def __init__(self, rows = 0, cols = 0, copy = None):
+        super().__init__(rows = rows, cols = cols, copy = copy)
+
+    def determinant(self):
         pass
-        
+
+    def inverse(self):
+        pass
