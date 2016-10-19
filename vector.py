@@ -16,6 +16,9 @@ class Vector(object):
                 return i
         return -1
 
+    def is_zero_vector(self):
+        return self.leading_term_index() < 0
+
     def __getitem__(self, x):
         return self._v[x]
 
