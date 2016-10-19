@@ -154,10 +154,13 @@ class Matrix(object):
                 sign = 1 if B[i][f] < 0 == B[j][f] < 0 else -1
                 q_factor = sign * B[j][f] / B[i][f]
                 B[j] = self._row_op_factor_add(B, i, j, q_factor)
+                if B[j].is_zero_vector():
+                    for h in range(j + 1, len(B)):
+                        B = self._row_op_swap(B, h - 1, h)
                 j += 1
             i += 1
         return B
-        
+
 class SquareMatrix(Matrix):
     def __init__(self, rows = 0, cols = 0, copy = None):
         super().__init__(rows = rows, cols = cols, copy = copy)
