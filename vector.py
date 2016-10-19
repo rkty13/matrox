@@ -10,6 +10,12 @@ class Vector(object):
     def append(self, x):
         self._v.append(x)
 
+    def leading_term_index(self):
+        for i in range(len(self._v)):
+            if self._v[i] != 0:
+                return i
+        return -1
+
     def __getitem__(self, x):
         return self._v[x]
 
