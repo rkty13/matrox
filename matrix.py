@@ -20,6 +20,9 @@ class Matrix(object):
     def num_cols(self):
         return self._cols
 
+    def rref(self):
+        return self._gauss_jordan_elimination()
+
     def __getitem__(self, x):
         return self._m[x]
 
@@ -124,25 +127,37 @@ class Matrix(object):
         return v * k
 
     def _row_op_swap(self, A, row_i, row_j):
-        pass
+        B = Matrix(copy = A)
+        B[row_i], B[row_j] = B[row_j], B[row_i]
+        return B
 
     def _row_op_factor_add(self, A, from_i, to_i, k):
         v = Vector(copy = A[to_i])
         v += A[from_i] * k
         return v
 
-    def gauss_jordan_elimination(self):
+    def _gauss_jordan_elimination(self):
         B = Matrix(copy = self)
-        for i in range(len(B)):
-            B[i] = self._row_op_scalar_mult(B, i, 1 / B[i][i])
-            for j in range(len(B)):
+        i = 0
+        while i < len(B):
+            f = B[i].leading_term_index()
+            if f < 0:
+                i += 1
+                continue
+            k_factor = 1 / B[i][f]
+            B[i] = self._row_op_scalar_mult(B, i, k_factor)
+            j = 0
+            while j < len(B):
                 if j == i:
+                    j += 1
                     continue
-                sign = 1 if B[i][i] < 0 == B[j][i] < 0 else -1
-                B[j] = self._row_op_factor_add(B, i, j, sign * B[j][i] / B[i][i])
+                sign = 1 if B[i][f] < 0 == B[j][f] < 0 else -1
+                q_factor = sign * B[j][f] / B[i][f]
+                B[j] = self._row_op_factor_add(B, i, j, q_factor)
+                j += 1
+            i += 1
         return B
-
-
+        
 class SquareMatrix(Matrix):
     def __init__(self, rows = 0, cols = 0, copy = None):
         super().__init__(rows = rows, cols = cols, copy = copy)
