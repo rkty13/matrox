@@ -81,6 +81,9 @@ class Fraction(Element):
     def __repr__(self):
         return self.__str__()
 
+    def __neg__(self):
+        return self._multiplication(self, -1)
+
     def __add__(self, y):
         return self._addition(self, y)
 
