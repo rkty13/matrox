@@ -1,20 +1,23 @@
 from element import Element
+from copy import deepcopy
 
 class Fraction(Element):
     def __init__(self, num, den = 1):
-        self._num = num
-        if den == 0:
-            raise ZeroDivisionError("Denominator cannot be 0.")
-        self._den = den
+        if type(num) is Fraction:
+            self._num = num._num
+            self._den = num._den
+        else:
+            self._num = num
+            if den == 0:
+                raise ZeroDivisionError("Denominator cannot be 0.")
+            self._den = den
 
     def simplify(self):
         div = self._gcd(self._num, self._den)
         return Fraction(int(self._num / div), int(self._den / div))
 
     def _gcd(self, a, b):
-        if b == 0:
-            return a
-        return self._gcd(b, a % b)
+        return a if b == 0 else self._gcd(b, a % b)
 
     def _addition(self, x, y):
         if type(y) in (int, float):
@@ -131,3 +134,10 @@ class Fraction(Element):
 
     def __ge__(self, y):
         return self._greater_equal_to(self, y)
+
+    def __copy__(self):
+        return type(self)(self._num, self._den)
+
+    def __deepcopy__(self, memo):
+        return type(self)(deepcopy(self._num, memo), 
+                            deepcopy(self._den, memo))

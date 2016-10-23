@@ -1,16 +1,15 @@
 from element import Element
 from fraction import Fraction as F
+from exceptions import DimensionError
+from copy import deepcopy
 
 class Vector(object):
-    def __init__(self, length = 0, copy = None, fractional = False):
-        if copy is not None:
-            if type(copy) is not list and type(copy) is not Vector:
-                raise TypeError("copy is not of type list or Vector.")
-        self._v = []
-        for m in range(len(copy) if copy else length):
-            if fractional:
-                self._v.append(F(copy[m]) if copy else F(0))
-            self._v.append(copy[m] if copy else 0)
+    def __init__(self, length = 0, lst = None, fractional = False):
+        self._fractional = fractional
+        if lst:
+            self._v = [F(deepcopy(x)) if self._fractional else deepcopy(x) for x in lst]
+        else:
+            self._v = [F(0) if self._fractional else 0 for _ in range(length)]
 
     def append(self, x):
         self._v.append(x)
@@ -25,7 +24,7 @@ class Vector(object):
         return self.leading_term_index() < 0
 
     def _scalar_mult(self, k, A):
-        Q = Vector(copy = A)
+        Q = deepcopy(A)
         for m in range(len(Q)):
             Q[m] *= k
         return Q
@@ -33,7 +32,7 @@ class Vector(object):
     def _addition(self, A, B):
         if len(A) != len(B):
             raise DimensionError("Dimensions do not match")
-        C = Vector(length = len(A))
+        C = deepcopy(A)
         for m in range(len(A)):
             C[m] = A[m] + B[m]
         return C
@@ -51,6 +50,25 @@ class Vector(object):
         for m in range(len(A)):
             val += A[m] * B[m]
         return val
+
+    def _row_op_mult(self, b, row_i, k):
+        v = deepcopy(b)
+        v[row_i] *= k
+        return v
+
+    def _row_op_swap(self, b, row_i, row_j):
+        v = deepcopy(b)
+        v[row_i], v[row_j] = v[row_j], v[row_i]
+        return v
+
+    def _row_op_add(self, b, from_i, to_i, k):
+        v = deepcopy(b)
+        v[to_i] += v[from_i] * k
+        return v
+
+    def __iter__(self):
+        for i in self._v:
+            yield i
 
     def __getitem__(self, x):
         return self._v[x]
@@ -71,10 +89,10 @@ class Vector(object):
         return self._addition(self, B)
 
     def __radd__(self, B):
-        return self._addition(self, B)
+        return self._addition(B, self)
 
     def __iadd__(self, B):
-        return self + B
+        return self._addition(self, B)
 
     def __sub__(self, B):
         return self._subtraction(self, B)
@@ -83,7 +101,7 @@ class Vector(object):
         return self._subtraction(B, self)
 
     def __isub__(self, B):
-        return self - B
+        return self._subtraction(self, B)
 
     def __mul__(self, B):
         return self._multiplication(self, B)
@@ -92,4 +110,15 @@ class Vector(object):
         return self._multiplication(B, self)
 
     def __imul__(self, B):
-        return self * B
+        return self._multiplication(self, B)
+
+    def __copy__(self):
+        v = type(self)(fractional = self._fractional)
+        v._v = self._v
+        return v
+
+    def __deepcopy__(self, memo):
+        v = type(self)(fractional = self._fractional)
+        v._v = [deepcopy(self._v[x], memo) for x in range(len(self._v))]
+        return v
+        
