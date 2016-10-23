@@ -6,12 +6,19 @@ from copy import deepcopy
 
 class LinearSystem(object):
     def __init__(self, equations = 0, unknowns = 0, A = None, b = None, fractional = True):
+        self._fractional = fractional
+        if A and not isinstance(A, Matrix):
+            raise DimensionError("A must be of type Matrix.")
+        if b and not isinstance(b, Vector):
+            raise DimensionError("b must be of type Vector.")
+
         if A and b and len(A) != len(b):
-            raise DimensionError("The number of linear equations in A does not match the number of solutions in b.")
+            raise DimensionError("The number of linear equations in " + 
+                                    "A does not match the number of solutions in b.")
         self._A = deepcopy(A) if A else \
-                    Matrix(rows = equations, cols = unknowns, fractional = fractional)
+                    type(A)(rows = equations, cols = unknowns, fractional = self._fractional)
         self._b = deepcopy(b) if b else \
-                    Vector(length = equations, fractional = fractional)
+                    type(b)(length = equations, fractional = self._fractional)
 
     def rref(self):
         return self._gauss_jordan_elimination(reduced = True)
