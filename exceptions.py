@@ -1,3 +1,7 @@
 class DimensionError(Exception):
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, args, kwargs)
+    def __init__(self, message):
+        Exception.__init__(self, message)
+
+class DoesNotExistError(Exception):
+    def __init__(self, message):
+        Exception.__init__(self, message)
