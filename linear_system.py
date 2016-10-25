@@ -16,9 +16,9 @@ class LinearSystem(object):
             raise DimensionError("The number of linear equations in " + 
                                     "A does not match the number of solutions in b.")
         self._A = deepcopy(A) if A else \
-                    type(A)(rows = equations, cols = unknowns, fractional = self._fractional)
+                    Matrix(rows = equations, cols = unknowns, fractional = self._fractional)
         self._b = deepcopy(b) if b else \
-                    type(b)(length = equations, fractional = self._fractional)
+                    Vector(length = equations, fractional = self._fractional)
 
     def rref(self):
         return self._gauss_jordan_elimination(reduced = True)
