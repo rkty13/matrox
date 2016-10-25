@@ -1,5 +1,6 @@
 from matrix import Matrix
 from exceptions import DimensionError
+from exceptions import DoesNotExistError
 from copy import deepcopy
 
 class SquareMatrix(Matrix):
@@ -17,11 +18,11 @@ class SquareMatrix(Matrix):
                             lst = lst, fractional = fractional)
 
     def determinant(self):
-        B = self.lu_decomposition()
+        L, U = self.lu_decomposition()
         l, u = 1, 1
         for i in range(len(self._m)):
-            l *= B[0][i][i]
-            u *= B[1][i][i]
+            l *= L[i][i]
+            u *= U[i][i]
         return l * u
 
     def rref(self):
@@ -31,11 +32,11 @@ class SquareMatrix(Matrix):
         return self._gauss_jordan_elimination(reduced = False)
 
     def inverse(self):
-        B = self._gauss_jordan_elimination(reduced = True, inverse_history = True)
+        B = self._gauss_jordan_elimination(reduced = True, history = True)
         if B[0].is_identity():
             C = SquareMatrix(size = len(self._m), identity = True)
-            for i in range(len(B[2])):
-                C *= B[2][i]
+            for i in range(len(B[1]) - 1, -1, -1):
+                C *= B[1][i]
             return C
         else:
             return None
@@ -49,10 +50,31 @@ class SquareMatrix(Matrix):
                     return False
         return True
 
+    def lu_decomposition(self):
+        B = self.upper_triangular(inverse_history = True)
+        U = B[0]
+        L = SquareMatrix(size = len(self._m), identity = True)
+        for i in range(len(B[2])):
+            L *= B[2][i]
+        return L, U
+
+    def ldu_decomposition(self):
+        L, U = self.lu_decomposition()
+        D = SquareMatrix(size = len(self._m), identity = True)
+        for i in range(len(D)):
+            D[i][i] = deepcopy(U[i][i])
+            U = U._row_op_mult(U, i, 1 / U[i][i])
+        return L, D, U
+
+    def plu_decomposition(self):
+        P = self._permute(self)
+        L, U = (P * self).lu_decomposition()
+        return P, L, U
+
     def upper_triangular(self, history = False, inverse_history = False):
         B = deepcopy(self)
-        traceback = []
-        inverse_traceback = []
+        tb = []
+        i_tb = []
         i = 0
         while i < len(B):
             j = i + 1
@@ -61,24 +83,24 @@ class SquareMatrix(Matrix):
                     j += 1
                     continue
                 s = 1 if B[i][i] < 0 == B[j][i] < 0 else -1
-                multiple = s * B[j][i] / B[i][i]
-                B = self._row_op_add(B, i, j, multiple)
+                m = s * B[j][i] / B[i][i]
+                B = self._row_op_add(B, i, j, m)
                 if history:
                     t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(multiple)
-                    traceback.append(t)
+                    t[j][i] = deepcopy(m)
+                    tb.append(t)
                 if inverse_history:
                     t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(-multiple)
-                    inverse_traceback.append(t)
+                    t[j][i] = deepcopy(-m)
+                    i_tb.append(t)
                 j += 1
             i += 1
-        return B, traceback, inverse_traceback
+        return B, tb, i_tb
 
     def lower_triangular(self, history = False, inverse_history = False):
         B = deepcopy(self)
-        traceback = []
-        inverse_traceback = []
+        tb = []
+        i_tb = []
         i = len(B) - 1
         while i >= 0:
             j = i - 1
@@ -87,74 +109,86 @@ class SquareMatrix(Matrix):
                     j -= 1
                     continue
                 s = 1 if B[i][i] < 0 == B[j][i] < 0 else -1
-                multiple = s * B[j][i] / B[i][i]
-                B = self._row_op_add(B, i, j, multiple)
+                m = s * B[j][i] / B[i][i]
+                B = self._row_op_add(B, i, j, m)
                 if history:
                     t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(multiple)
-                    traceback.append(t)
+                    t[j][i] = deepcopy(m)
+                    tb.append(t)
                 if inverse_history:
                     t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(-multiple)
-                    inverse_traceback.append(t)
+                    t[j][i] = deepcopy(-m)
+                    i_tb.append(t)
                 j -= 1
             i -= 1
-        return B, traceback, inverse_traceback
+        return B, tb, i_tb
+
+    def _el_matrix_add(self, i, j, k):
+        t = SquareMatrix(size = len(self._m), identity = True)
+        t[i][j] = deepcopy(k)
+        return t
+
+    def _el_matrix_mult(self, i, k):
+        t = SquareMatrix(size = len(self._m), identity = True)
+        t[i][i] = deepcopy(k)
+        return t
+
+    def _el_matrix_swap(self, i, j):
+        t = SquareMatrix(size = len(self._m), identity = True)
+        t[i], t[j] = t[j], t[i]
+        return t
+
+    def _permute(self, A):
+        P = SquareMatrix(size = len(A._m), identity = True)
+        PA = deepcopy(A)
+        for i in range(len(PA)):
+            if PA[i][i] == 0:
+                s = i + 1
+                while s < len(PA):
+                    if PA[s][i] != 0:
+                        break
+                    else:
+                        s += 1
+                if s < len(PA):
+                    P = P._el_matrix_swap(i, s)
+                    PA = PA._el_matrix_swap(i, s)
+        return P
 
     def _gauss_jordan_elimination(self, reduced = True, history = False, inverse_history = False):
         B = deepcopy(self)
-        traceback = []
-        inverse_traceback = []
+        tb = []
+        i_tb = []
         i = 0
         while i < len(B):
             f = B[i].leading_term_index()
             if f < 0:
                 i += 1
                 continue
-            reciprocal = 1 / B[i][f]
-            B = self._row_op_mult(B, i, reciprocal)
+            r = 1 / B[i][f]
+            B = self._row_op_mult(B, i, r)
             if history:
-                t = SquareMatrix(size = len(self._m), identity = True)
-                t[i][i] = deepcopy(reciprocal)
-                traceback.append(t)
+                tb.append(self._el_matrix_mult(i, r))
             if inverse_history:
-                t = SquareMatrix(size = len(self._m), identity = True)
-                t[i][i] = deepcopy(1 / reciprocal)
-                inverse_traceback.append(t)
+                i_tb.append(self._el_matrix_mult(i, 1 / r))
             j = 0 if reduced else i + 1
             while j < len(B):
                 if j == i:
                     j += 1
                     continue
                 s = 1 if B[i][f] < 0 == B[j][f] < 0 else -1
-                multiple = s * B[j][f] / B[i][f]
-                B = self._row_op_add(B, i, j, multiple)
+                m = s * B[j][f] / B[i][f]
+                B = self._row_op_add(B, i, j, m)
                 if history:
-                    t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(multiple)
-                    traceback.append(t)
+                    tb.append(self._el_matrix_add(j, i, m))
                 if inverse_history:
-                    t = SquareMatrix(size = len(self._m), identity = True)
-                    t[j][i] = deepcopy(-multiple)
-                    inverse_traceback.append(t)
+                    i_tb.append(self._el_matrix_add(j, i, -m))
                 if B[j].is_zero_vector():
                     for h in range(j + 1, len(B)):
                         B = self._row_op_swap(B, h - 1, h)
                         if history:
-                            t = SquareMatrix(size = len(self._m), identity = True)
-                            t[h - 1], t[h] = t[h], t[h - 1]
-                            traceback.append(t)
+                            tb.append(self._el_matrix_swap(h - 1, h))
                         if inverse_history:
-                            t = SquareMatrix(size = len(self._m), identity = True)
-                            t[h - 1], t[h] = t[h], t[h - 1]
-                            inverse_traceback.append(t)
+                            i_tb.append(self._el_matrix_swap(h - 1, h))
                 j += 1
             i += 1
-        return B.simplify(), traceback, inverse_traceback
-
-    def lu_decomposition(self):
-        B = self.upper_triangular(inverse_history = True)
-        C = SquareMatrix(size = len(self._m), identity = True)
-        for i in range(len(B[2])):
-            C *= B[2][i]
-        return C, B[0]
+        return B.simplify(), tb, i_tb
