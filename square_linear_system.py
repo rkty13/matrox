@@ -36,7 +36,7 @@ class SquareLinearSystem(LinearSystem):
                 if inverse_history:
                     t = SquareMatrix(size = len(self._m), identity = True)
                     t[j][i] = deepcopy(-multiple)
-                    traceback.append(t)
+                    inverse_traceback.append(t)
                 j += 1
             i += 1
         return B, traceback, inverse_traceback
