@@ -18,7 +18,7 @@ class SquareMatrix(Matrix):
                             lst = lst, fractional = fractional)
 
     def determinant(self):
-        L, U = self.lu_decomposition()
+        L, U = self.lu_factorization()
         l, u = 1, 1
         for i in range(len(self._m)):
             l *= L[i][i]
@@ -50,7 +50,30 @@ class SquareMatrix(Matrix):
                     return False
         return True
 
-    def lu_decomposition(self):
+    def is_symmetric(self):
+        for i in range(len(self._m)):
+            for j in range(i, len(self._m[i])):
+                if self._m[i][j] != self._m[j][i]:
+                    return False
+        return True
+
+    def permute(self, A):
+        P = SquareMatrix(size = len(A._m), identity = True)
+        PA = deepcopy(A)
+        for i in range(len(PA)):
+            if PA[i][i] == 0:
+                s = i + 1
+                while s < len(PA):
+                    if PA[s][i] != 0:
+                        break
+                    else:
+                        s += 1
+                if s < len(PA):
+                    P = P._el_matrix_swap(i, s)
+                    PA = PA._el_matrix_swap(i, s)
+        return P
+
+    def lu_factorization(self):
         B = self.upper_triangular(inverse_history = True)
         U = B[0]
         L = SquareMatrix(size = len(self._m), identity = True)
@@ -58,18 +81,23 @@ class SquareMatrix(Matrix):
             L *= B[2][i]
         return L, U
 
-    def ldu_decomposition(self):
-        L, U = self.lu_decomposition()
+    def ldu_factorization(self):
+        L, U = self.lu_factorization()
         D = SquareMatrix(size = len(self._m), identity = True)
         for i in range(len(D)):
             D[i][i] = deepcopy(U[i][i])
             U = U._row_op_mult(U, i, 1 / U[i][i])
         return L, D, U
 
-    def plu_decomposition(self):
-        P = self._permute(self)
-        L, U = (P * self).lu_decomposition()
+    def plu_factorization(self):
+        P = self.permute(self)
+        L, U = (P * self).lu_factorization()
         return P, L, U
+
+    def ldlt_factorization(self):
+        if not self.is_symmetric():
+            return None, None, None
+        return self.ldu_factorization()
 
     def upper_triangular(self, history = False, inverse_history = False):
         B = deepcopy(self)
@@ -137,22 +165,6 @@ class SquareMatrix(Matrix):
         t = SquareMatrix(size = len(self._m), identity = True)
         t[i], t[j] = t[j], t[i]
         return t
-
-    def _permute(self, A):
-        P = SquareMatrix(size = len(A._m), identity = True)
-        PA = deepcopy(A)
-        for i in range(len(PA)):
-            if PA[i][i] == 0:
-                s = i + 1
-                while s < len(PA):
-                    if PA[s][i] != 0:
-                        break
-                    else:
-                        s += 1
-                if s < len(PA):
-                    P = P._el_matrix_swap(i, s)
-                    PA = PA._el_matrix_swap(i, s)
-        return P
 
     def _gauss_jordan_elimination(self, reduced = True, history = False, inverse_history = False):
         B = deepcopy(self)
