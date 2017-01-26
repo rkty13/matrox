@@ -1,4 +1,4 @@
-from element import Element
+from .element import Element
 
 class Fraction(Element):
     def __init__(self, numerator, denominator=1):
