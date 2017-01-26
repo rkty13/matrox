@@ -15,12 +15,7 @@ class TestFractionClass(unittest.TestCase):
         self.assertEqual(f.get_denominator(), 2)
         self.assertEqual(str(f), "1/2")
 
-    def test_create_zero_den_fraction(self):
-        with self.assertRaises(ValueError) as context:
-            f = Fraction(1, 0)
 
-        self.assertTrue("Denominator of Fraction cannot be 0.", 
-                        context.exception)
 
 class TestFraction(unittest.TestCase):
     

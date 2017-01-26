@@ -1,2 +1,0 @@
-coverage==4.3.4
-wheel==0.24.0

@@ -1,4 +1,30 @@
 from copy import deepcopy
+from .elements.element import Element
+
+class Matrix(object):
+    def __init__(self, data):
+        self._matrix = []
+        for i in range(len(data)):
+            self._matrix.append([])
+            for j in range(len(data[i])):
+                self._matrix[i].append(deepcopy(data[i][j]))
+
+    def __getitem__(self, key):
+        return self._matrix[key]
+
+    def __setitem__(self, key, value):
+        self._matrix[key] = value
+
+    def __len__(self):
+        return len(self._matrix)
+
+    def __deepcopy__(self, memo):
+        return type(self)(self._matrix)
+
+    def __repr__(self):
+        return "%s(%s)" % (type(self).__name__, str(self._matrix))
+
+
 
 def leading_term_index(vector):
     for i in range(len(vector)):
@@ -24,8 +50,26 @@ def row_op_swap(matrix, row_i, row_j):
     cmatrix[row_i], cmatrix[row_j] = cmatrix[row_j], cmatrix[row_i]
     return cmatrix
 
-def gaussian_elimination(matrix, reduced = True):
-    B = deepcopy(matrix) 
+def simplify_matrix(matrix):
+    B = deepcopy(matrix)
+    i = 0
+    while i < len(B):
+        f = leading_term_index(B[i])
+        if f < 0:
+            i += 1
+            continue
+        B = row_op_mult(B, i, 1 / B[i][f])
+        i += 1
+    return B
+
+def rref(matrix):
+    return gaussian_elimination(matrix, reduced=True)
+
+def ref(matrix):
+    return gaussian_elimination(matrix, reduced=False)
+
+def gaussian_elimination(matrix, reduced=True):
+    B = deepcopy(matrix)
     i = 0
     while i < len(B):
         f = leading_term_index(B[i])
