@@ -1,5 +1,5 @@
 from copy import deepcopy
-from .elements.element import Element
+import numbers
 
 class Matrix(object):
     def __init__(self, data):
@@ -49,6 +49,47 @@ def row_op_swap(matrix, row_i, row_j):
     cmatrix = deepcopy(matrix)
     cmatrix[row_i], cmatrix[row_j] = cmatrix[row_j], cmatrix[row_i]
     return cmatrix
+
+def zero_matrix(rows, cols):
+    return Matrix([[j for j in range(cols)] for i in range(rows)])
+
+def num_rows(matrix):
+    return len(matrix)
+
+def num_cols(matrix):
+    return len(matrix[0])
+
+def scalar_mult_matrix(matrix, k):
+    matrix_c = zero_matrix(num_rows(matrix), num_cols(matrix))
+    for m in range(num_rows(matrix)):
+        for n in range(num_cols(matrix)):
+            matrix_c[m][n] = matrix[m][n] * k
+    return matrix_c
+
+def add_matrices(matrix_a, matrix_b):
+    matrix_c = zero_matrix(num_rows(matrix_a), num_cols(matrix_a))
+    for m in range(num_rows(matrix_c)):
+        for n in range(num_cols(matrix_c)):
+            matrix_c[m][n] = matrix_a[m][n] + matrix_b[m][n]
+    return matrix_c
+
+def subtract_matrices(matrix_a, matrix_b):
+    negated = scalar_mult_matrix(matrix_b, -1)
+    return add_matrices(matrix_a, negated)
+
+def multiply_matrices(matrix_a, matrix_b):
+    if isinstance(matrix_a, numbers.Number):
+        return scalar_mult_matrix(matrix_b, matrix_a)
+    if isinstance(matrix_b, numbers.Number):
+        return scalar_mult_matrix(matrix_a, matrix_b)
+    matrix_c = zero_matrix(num_rows(matrix_a), num_cols(matrix_b))
+    for i in range(num_rows(matrix_a)):
+        for j in range(num_cols(matrix_b)):
+            el_sum = 0
+            for k in range(num_cols(matrix_a)):
+                el_sum += matrix_a[i][k] * matrix_b[k][j]
+            matrix_c[i][j] = el_sum
+    return matrix_c
 
 def simplify_matrix(matrix):
     B = deepcopy(matrix)
