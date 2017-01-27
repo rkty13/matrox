@@ -1,5 +1,16 @@
 from copy import deepcopy
-import numbers
+from functools import wraps
+from numbers import Number
+
+def square_matrix(func):
+    @wraps(func)
+    def func_wrapper(*args, **kwargs):
+        for arg in args:
+            if isinstance(arg, Matrix):
+                if not is_square_matrix(arg):
+                    raise ValueError("Matrix must be a square matrix.")
+        return func(*args, **kwargs)
+    return func_wrapper
 
 class Matrix(object):
     def __init__(self, data):
@@ -23,6 +34,27 @@ class Matrix(object):
 
     def __repr__(self):
         return "%s(%s)" % (type(self).__name__, str(self._matrix))
+
+    def __add__(self, B):
+        return add_matrices(self, B)
+
+    def __radd__(self, B):
+        return add_matrices(self, B)
+
+    def __sub__(self, B):
+        return subtract_matrices(self, B)
+
+    def __rsub__(self, B):
+        return subtract_matrices(B, self)
+
+    def __mul__(self, B):
+        return multiply_matrices(self, B)
+
+    def __rmul__(self, B):
+        return multiply_matrices(B, self)
+
+    def __pow__(self, x):
+        return matrix_power(self, x)
 
 
 
@@ -50,8 +82,15 @@ def row_op_swap(matrix, row_i, row_j):
     cmatrix[row_i], cmatrix[row_j] = cmatrix[row_j], cmatrix[row_i]
     return cmatrix
 
+def is_square_matrix(matrix):
+    return num_rows(matrix) == num_cols(matrix)
+
 def zero_matrix(rows, cols):
-    return Matrix([[j for j in range(cols)] for i in range(rows)])
+    return Matrix([[0 for j in range(cols)] for i in range(rows)])
+
+def identity_matrix(rows):
+    return Matrix([[1 if i == j else 0 for j in range(rows)] 
+        for i in range(rows)])
 
 def num_rows(matrix):
     return len(matrix)
@@ -85,9 +124,9 @@ def subtract_matrices(matrix_a, matrix_b):
     return add_matrices(matrix_a, negated)
 
 def multiply_matrices(matrix_a, matrix_b):
-    if isinstance(matrix_a, numbers.Number):
+    if isinstance(matrix_a, Number):
         return scalar_mult_matrix(matrix_b, matrix_a)
-    if isinstance(matrix_b, numbers.Number):
+    if isinstance(matrix_b, Number):
         return scalar_mult_matrix(matrix_a, matrix_b)
     matrix_c = zero_matrix(num_rows(matrix_a), num_cols(matrix_b))
     for i in range(num_rows(matrix_a)):
@@ -96,6 +135,15 @@ def multiply_matrices(matrix_a, matrix_b):
             for k in range(num_cols(matrix_a)):
                 el_sum += matrix_a[i][k] * matrix_b[k][j]
             matrix_c[i][j] = el_sum
+    return matrix_c
+
+@square_matrix
+def matrix_power(matrix, k):
+    matrix_c = deepcopy(matrix)
+    if k == 0:
+        return identity_matrix(num_rows(matrix))
+    for i in range(k - 1):
+        matrix_c = matrix_c * matrix
     return matrix_c
 
 def simplify_matrix(matrix):
