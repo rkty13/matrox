@@ -85,7 +85,7 @@ class TestMatrixOperations(unittest.TestCase):
         matrix_c = multiply_matrices(matrix_a, matrix_b)
         self.assertEqual(repr(matrix_c), "Matrix([[9, 12, 15], [19, 26, 33]])")
 
-        
+
 
 class TestMatrixFunctions(unittest.TestCase):
 
@@ -106,3 +106,8 @@ class TestMatrixFunctions(unittest.TestCase):
         c_matrix = ref(matrix)
         self.assertEqual(repr(c_matrix), 
             "Matrix([[1.0, 2.0, 3.0], [-0.0, 1.0, 2.0]])")
+
+    def test_transpose(self):
+        matrix = Matrix([[1, 2, 3], [4, 5, 6]])
+        matrix_c = transpose(matrix)
+        self.assertEqual(repr(matrix_c), "Matrix([[1, 4], [2, 5], [3, 6]])")

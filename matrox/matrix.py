@@ -66,6 +66,13 @@ def scalar_mult_matrix(matrix, k):
             matrix_c[m][n] = matrix[m][n] * k
     return matrix_c
 
+def transpose(matrix):
+    matrix_c = zero_matrix(num_cols(matrix), num_rows(matrix))
+    for m in range(num_rows(matrix)):
+        for n in range(num_cols(matrix)):
+            matrix_c[n][m] = deepcopy(matrix[m][n])
+    return matrix_c
+
 def add_matrices(matrix_a, matrix_b):
     matrix_c = zero_matrix(num_rows(matrix_a), num_cols(matrix_a))
     for m in range(num_rows(matrix_c)):
