@@ -1,7 +1,8 @@
 import unittest
 
 from fractions import Fraction as F
-from matrox.matrix import *
+from matrox import *
+from matrox.linalg import *
 
 class TestRowOperations(unittest.TestCase):
 
