@@ -55,8 +55,8 @@ def upper_triangular(matrix, history=False, inverse_history=False):
     return matrix_c, traceback, inverse_traceback
 
 @assert_square_matrix
-def lower_triangular(self, history = False, inverse_history = False):
-    matrix_c = deepcopy(self)
+def lower_triangular(matrix, history = False, inverse_history = False):
+    matrix_c = deepcopy(matrix)
     traceback = []
     inverse_traceback = []
     i = num_rows(matrix_c) - 1

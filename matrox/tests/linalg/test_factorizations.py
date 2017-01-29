@@ -23,13 +23,27 @@ class TestMatrixFactorizations(unittest.TestCase):
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
 
     def test_upper_triangular(self):
-        pass
+        matrix = Matrix([[2, 1], [6, 8]])
+        upper, history, inverse_history = \
+            upper_triangular(matrix, history=True, inverse_history=True)
+        self.assertEqual(repr(upper), "Matrix([[2, 1], [0.0, 5.0]])")
+        self.assertEqual(repr(history), "[Matrix([[1, 0], [-3.0, 1]])]")
+        self.assertEqual(repr(inverse_history), "[Matrix([[1, 0], [3.0, 1]])]")
 
     def test_lower_triangular(self):
-        pass
+        matrix = Matrix([[2, 1], [6, 8]])
+        lower, history, inverse_history = \
+            lower_triangular(matrix, history=True, inverse_history=True)
+        self.assertEqual(repr(lower), "Matrix([[1.25, 0.0], [6, 8]])")
+        self.assertEqual(repr(history), "[Matrix([[1, -0.125], [0, 1]])]")
+        self.assertEqual(repr(inverse_history), 
+            "[Matrix([[1, 0.125], [0, 1]])]")
 
     def test_lu_factorization(self):
-        pass
+        matrix = Matrix([[2, 1], [6, 8]])
+        lower, upper = lu_factorization(matrix)
+        self.assertEqual(repr(lower), "Matrix([[1.0, 0], [3.0, 1]])")
+        self.assertEqual(repr(upper), "Matrix([[2, 1], [0.0, 5.0]])")
 
     def test_ldu_factorization(self):
         pass
