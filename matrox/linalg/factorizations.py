@@ -6,23 +6,9 @@ from matrox import (
     is_symmetric,
     num_rows,
     row_op_add,
-    row_op_mult
+    row_op_mult,
+    el_matrix_swap
 )
-
-def el_matrix_add(matrix, i, j, k):
-    t = identity_matrix(num_rows(matrix))
-    t[i][j] = deepcopy(k)
-    return t
-
-def el_matrix_mult(matrix, i, k):
-    t = identity_matrix(num_rows(matrix))
-    t[i][i] = deepcopy(k)
-    return t
-
-def el_matrix_swap(matrix, i, j):
-    t = identity_matrix(num_rows(matrix))
-    t[i], t[j] = t[j], t[i]
-    return t
 
 @assert_square_matrix
 def permute_matrix(matrix):
