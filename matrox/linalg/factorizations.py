@@ -13,18 +13,18 @@ from matrox import (
 @assert_square_matrix
 def permute_matrix(matrix):
     permuted = identity_matrix(num_rows(matrix))
-    permute_matrix = deepcopy(matrix)
-    for i in range(num_rows(permute_matrix)):
-        if permute_matrix[i][i] == 0:
+    permute_from = deepcopy(matrix)
+    for i in range(num_rows(permute_from)):
+        if permute_from[i][i] == 0:
             s = i + 1
-            while s < num_rows(permute_matrix):
-                if permute_matrix[s][i] != 0:
+            while s < num_rows(permute_from):
+                if permute_from[s][i] != 0:
                     break
                 else:
                     s += 1
-            if s < num_rows(permute_matrix):
+            if s < num_rows(permute_from):
                 permuted = el_matrix_swap(permuted, i, s)
-                permute_matrix = el_matrix_swap(permuted_matrix, i, s)
+                permute_from = el_matrix_swap(permute_from, i, s)
     return permuted
 
 @assert_square_matrix

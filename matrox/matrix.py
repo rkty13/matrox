@@ -2,13 +2,16 @@ from copy import deepcopy
 from functools import wraps
 from numbers import Number
 
+class DimensionError(Exception):
+    pass
+
 def assert_square_matrix(func):
     @wraps(func)
     def func_wrapper(*args, **kwargs):
         for arg in args:
             if isinstance(arg, Matrix):
                 if not is_square_matrix(arg):
-                    raise ValueError("Matrix must be a square matrix.")
+                    raise DimensionError("Matrix must be a square matrix.")
         return func(*args, **kwargs)
     return func_wrapper
 

@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+from matrox import identity_matrix, num_rows
+
 def row_op_mult(matrix, row_i, k):
     cmatrix = deepcopy(matrix)
     cmatrix[row_i] = list(map(lambda x: x * k, cmatrix[row_i]))
