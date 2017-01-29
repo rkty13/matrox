@@ -2,7 +2,7 @@ from copy import deepcopy
 from functools import wraps
 from numbers import Number
 
-def square_matrix(func):
+def assert_square_matrix(func):
     @wraps(func)
     def func_wrapper(*args, **kwargs):
         for arg in args:
@@ -85,6 +85,13 @@ def row_op_swap(matrix, row_i, row_j):
 def is_square_matrix(matrix):
     return num_rows(matrix) == num_cols(matrix)
 
+def is_symmetric(matrix):
+    for i in range(num_rows(matrix)):
+        for j in range(i, num_cols(matrix)):
+            if matrix[i][j] != matrix[j][i]:
+                return False
+    return True
+
 def zero_matrix(rows, cols):
     return Matrix([[0 for j in range(cols)] for i in range(rows)])
 
@@ -137,7 +144,7 @@ def multiply_matrices(matrix_a, matrix_b):
             matrix_c[i][j] = el_sum
     return matrix_c
 
-@square_matrix
+@assert_square_matrix
 def matrix_power(matrix, k):
     matrix_c = deepcopy(matrix)
     if k == 0:
