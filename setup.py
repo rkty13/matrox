@@ -17,7 +17,7 @@ setup(
     url="https://github.com/rkty13/matrox",
     license="The MIT License (MIT)",
     description="Linear Algebra library.",
-    categories=[
+    classifiers=[
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6"
