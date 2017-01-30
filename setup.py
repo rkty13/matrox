@@ -16,5 +16,10 @@ setup(
     packages=["matrox", "matrox.linalg", "matrox.tests"],
     url="https://github.com/rkty13/matrox",
     license="The MIT License (MIT)",
-    description="Linear Algebra library."
+    description="Linear Algebra library.",
+    categories=[
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6"
+    ]
 )
