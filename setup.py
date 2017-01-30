@@ -1,7 +1,10 @@
 from distutils.core import setup
 
-with open("requirements.txt") as f:
-    requirements = f.read().splitlines()
+try:
+    with open("requirements.txt") as f:
+        requirements = f.read().splitlines()
+except FileNotFoundError:
+    pass
 
 exec(open("matrox/version.py", "r").read())
 
