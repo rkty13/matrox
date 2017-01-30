@@ -1,6 +1,7 @@
 from copy import deepcopy
 from functools import wraps
 from numbers import Number
+from fractions import Fraction
 
 class DimensionError(Exception):
     pass
@@ -16,12 +17,15 @@ def assert_square_matrix(func):
     return func_wrapper
 
 class Matrix(object):
-    def __init__(self, data):
+    def __init__(self, data, fraction=False):
         self._matrix = []
         for i in range(len(data)):
             self._matrix.append([])
             for j in range(len(data[i])):
-                self._matrix[i].append(deepcopy(data[i][j]))
+                if fraction:
+                    self._matrix[i].append(Fraction(data[i][j]))
+                else:
+                    self._matrix[i].append(deepcopy(data[i][j]))
 
     def __getitem__(self, key):
         return self._matrix[key]
@@ -36,7 +40,8 @@ class Matrix(object):
         return type(self)(self._matrix)
 
     def __repr__(self):
-        return "%s(%s)" % (type(self).__name__, str(self._matrix))
+        return "%s(%s)" % (type(self).__name__, 
+            str([[str(j) for j in i] for i in self._matrix]))
 
     def __add__(self, B):
         return add_matrices(self, B)
