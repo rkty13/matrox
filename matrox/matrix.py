@@ -145,15 +145,3 @@ def matrix_power(matrix, k):
     for i in range(k - 1):
         matrix_c = matrix_c * matrix
     return matrix_c
-
-def simplify_matrix(matrix):
-    B = deepcopy(matrix)
-    i = 0
-    while i < len(B):
-        f = leading_term_index(B[i])
-        if f < 0:
-            i += 1
-            continue
-        B = row_op_mult(B, i, 1 / B[i][f])
-        i += 1
-    return B
