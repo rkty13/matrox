@@ -30,6 +30,18 @@ class TestMatrixOperations(unittest.TestCase):
         matrix = identity_matrix(0)
         self.assertEqual(repr(matrix), "Matrix([])")
 
+    def test_fill_matrix(self):
+        matrix = fill_matrix(2, 2, 3)
+        self.assertEqual(repr(matrix),
+            "Matrix([['3', '3'], ['3', '3']])")
+
+    def test_augment(self):
+        matrix_a = Matrix([[1, 2, 3], [4, 5, 6]])
+        matrix_b = Matrix([[7], [8]])
+        augmented = augment(matrix_a, matrix_b)
+        self.assertEqual(repr(augmented),
+            "Matrix([['1', '2', '3', '7'], ['4', '5', '6', '8']])")
+
     def test_scalar_mult_matrix(self):
         matrix = Matrix([[1, 2], [3, 4]])
         scalar_matrix = scalar_mult_matrix(matrix, 2)

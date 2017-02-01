@@ -85,18 +85,29 @@ def is_symmetric(matrix):
                 return False
     return True
 
-def zero_matrix(rows, cols):
-    return Matrix([[0 for j in range(cols)] for i in range(rows)])
+def zero_matrix(rows, cols, fraction=False):
+    return Matrix([[0 for j in range(cols)] for i in range(rows)],
+        fraction=fraction)
 
-def identity_matrix(rows):
-    return Matrix([[1 if i == j else 0 for j in range(rows)] 
-        for i in range(rows)])
+def identity_matrix(rows, fraction=False):
+    return Matrix([[int(i == j) for j in range(rows)] for i in range(rows)],
+        fraction=fraction)
+
+def fill_matrix(rows, cols, fill, fraction=False):
+    return Matrix([[fill for j in range(cols)] for i in range(rows)],
+        fraction=fraction)
 
 def num_rows(matrix):
     return len(matrix)
 
 def num_cols(matrix):
     return len(matrix[0])
+
+def augment(matrix_a, matrix_b):
+    augmented = []
+    for i in range(num_rows(matrix_a)):
+        augmented.append(matrix_a[i] + matrix_b[i])
+    return Matrix(augmented)
 
 def scalar_mult_matrix(matrix, k):
     matrix_c = zero_matrix(num_rows(matrix), num_cols(matrix))
