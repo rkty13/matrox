@@ -66,6 +66,18 @@ class Matrix(object):
 
 
 
+def zero_matrix(rows, cols, fraction=False):
+    return Matrix([[0 for j in range(cols)] for i in range(rows)],
+        fraction=fraction)
+
+def identity_matrix(rows, fraction=False):
+    return Matrix([[int(i == j) for j in range(rows)] for i in range(rows)],
+        fraction=fraction)
+
+def fill_matrix(rows, cols, fill, fraction=False):
+    return Matrix([[fill for j in range(cols)] for i in range(rows)],
+        fraction=fraction)
+
 def leading_term_index(vector):
     for i in range(len(vector)):
         if vector[i] != 0:
@@ -85,26 +97,21 @@ def is_symmetric(matrix):
                 return False
     return True
 
-def zero_matrix(rows, cols, fraction=False):
-    return Matrix([[0 for j in range(cols)] for i in range(rows)],
-        fraction=fraction)
-
-def identity_matrix(rows, fraction=False):
-    return Matrix([[int(i == j) for j in range(rows)] for i in range(rows)],
-        fraction=fraction)
-
-def fill_matrix(rows, cols, fill, fraction=False):
-    return Matrix([[fill for j in range(cols)] for i in range(rows)],
-        fraction=fraction)
-
-def dim(matrix):
-    return num_rows(matrix), num_cols(matrix)
-
 def num_rows(matrix):
     return len(matrix)
 
 def num_cols(matrix):
     return len(matrix[0])
+
+def dim(matrix):
+    return num_rows(matrix), num_cols(matrix)
+
+def num_non_zero_rows(matrix):
+    num_non_zero = 0
+    for row in matrix:
+        if not is_zero_vector(row):
+            num_non_zero += 1
+    return num_non_zero
 
 def augment(matrix_a, matrix_b):
     augmented = []

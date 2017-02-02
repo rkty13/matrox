@@ -40,6 +40,15 @@ class TestMatrixOperations(unittest.TestCase):
         dimensions = dim(matrix)
         self.assertEqual(repr(dimensions), "(4, 2)")
 
+    def test_num_non_zero_rows(self):
+        matrix = zero_matrix(3, 3)
+        num = num_non_zero_rows(matrix)
+        self.assertEqual(repr(num), "0")
+
+        matrix = fill_matrix(3, 3, 2)
+        num = num_non_zero_rows(matrix)
+        self.assertEqual(repr(num), "3")
+
     def test_augment(self):
         matrix_a = Matrix([[1, 2, 3], [4, 5, 6]])
         matrix_b = Matrix([[7], [8]])
