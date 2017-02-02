@@ -17,19 +17,16 @@ def row_op_swap(matrix, row_i, row_j):
     cmatrix[row_i], cmatrix[row_j] = cmatrix[row_j], cmatrix[row_i]
     return cmatrix
 
-@assert_square_matrix
 def el_matrix_add(matrix, i, j, k):
     t = identity_matrix(num_rows(matrix))
     t[i][j] = deepcopy(k)
     return t
 
-@assert_square_matrix
 def el_matrix_mult(matrix, i, k):
     t = identity_matrix(num_rows(matrix))
     t[i][i] = deepcopy(k)
     return t
 
-@assert_square_matrix
 def el_matrix_swap(matrix, i, j):
     t = identity_matrix(num_rows(matrix))
     t[i], t[j] = t[j], t[i]

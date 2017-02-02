@@ -2,12 +2,12 @@ from copy import deepcopy
 
 from matrox import (
     assert_square_matrix,
+    el_matrix_swap,
     identity_matrix,
     is_symmetric,
     num_rows,
     row_op_add,
-    row_op_mult,
-    el_matrix_swap
+    row_op_mult
 )
 
 @assert_square_matrix
@@ -36,9 +36,6 @@ def upper_triangular(matrix, history=False, inverse_history=False):
     while i < num_rows(matrix):
         j = i + 1
         while j < num_rows(matrix):
-            if j == i:
-                j += 1
-                continue
             s = 1 if matrix_c[i][i] < 0 == matrix_c[j][i] < 0 else -1
             m = s * matrix_c[j][i] / matrix_c[i][i]
             matrix_c = row_op_add(matrix_c, i, j, m)
@@ -63,9 +60,6 @@ def lower_triangular(matrix, history = False, inverse_history = False):
     while i >= 0:
         j = i - 1
         while j >= 0:
-            if j == i:
-                j -= 1
-                continue
             s = 1 if matrix_c[i][i] < 0 == matrix_c[j][i] < 0 else -1
             m = s * matrix_c[j][i] / matrix_c[i][i]
             matrix_c = row_op_add(matrix_c, i, j, m)

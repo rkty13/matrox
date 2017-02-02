@@ -43,23 +43,23 @@ class Matrix(object):
         return "%s(%s)" % (type(self).__name__, 
             str([[str(j) for j in i] for i in self._matrix]))
 
-    def __add__(self, B):
-        return add_matrices(self, B)
+    def __add__(self, other):
+        return add_matrices(self, other)
 
-    def __radd__(self, B):
-        return add_matrices(self, B)
+    def __radd__(self, other):
+        return add_matrices(self, other)
 
-    def __sub__(self, B):
-        return subtract_matrices(self, B)
+    def __sub__(self, other):
+        return subtract_matrices(self, other)
 
-    def __rsub__(self, B):
-        return subtract_matrices(B, self)
+    def __rsub__(self, other):
+        return subtract_matrices(other, self)
 
-    def __mul__(self, B):
-        return multiply_matrices(self, B)
+    def __mul__(self, other):
+        return multiply_matrices(self, other)
 
-    def __rmul__(self, B):
-        return multiply_matrices(B, self)
+    def __rmul__(self, other):
+        return multiply_matrices(other, self)
 
     def __pow__(self, x):
         return matrix_power(self, x)
@@ -96,6 +96,9 @@ def identity_matrix(rows, fraction=False):
 def fill_matrix(rows, cols, fill, fraction=False):
     return Matrix([[fill for j in range(cols)] for i in range(rows)],
         fraction=fraction)
+
+def dim(matrix):
+    return num_rows(matrix), num_cols(matrix)
 
 def num_rows(matrix):
     return len(matrix)
