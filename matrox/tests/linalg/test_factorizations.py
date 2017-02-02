@@ -1,6 +1,6 @@
 import unittest
 
-from matrox import Matrix, DimensionError
+from matrox import Matrix, DimensionError, fill_matrix
 from matrox.linalg import *
 
 class TestMatrixFactorizations(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestMatrixFactorizations(unittest.TestCase):
         self.assertEqual(repr(permute),
             "Matrix([['0', '1', '0'], ['1', '0', '0'], ['0', '0', '1']])")
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             permute = permute_matrix(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -30,7 +30,7 @@ class TestMatrixFactorizations(unittest.TestCase):
         self.assertEqual(repr(inverse_history),
             "[Matrix([['1', '0'], ['3', '1']])]")
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             upper = upper_triangular(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -44,7 +44,7 @@ class TestMatrixFactorizations(unittest.TestCase):
         self.assertEqual(repr(inverse_history), 
             "[Matrix([['1', '1/8'], ['0', '1']])]")
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             lower = lower_triangular(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -56,7 +56,7 @@ class TestMatrixFactorizations(unittest.TestCase):
         self.assertEqual(repr(upper), "Matrix([['2', '1'], ['0', '5']])")
         self.assertEqual(repr(lower * upper), repr(matrix))
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             lower, upper = lu_factorization(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -72,7 +72,7 @@ class TestMatrixFactorizations(unittest.TestCase):
             "Matrix([['1', '5', '4'], ['0', '1', '8/9'], ['0', '0', '1']])")
         self.assertEqual(repr(lower * diag * upper), repr(matrix))
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             lower, diag, upper = ldu_factorization(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -98,7 +98,7 @@ class TestMatrixFactorizations(unittest.TestCase):
             "Matrix([['3', '0', '4'], ['0', '5', '4'], ['0', '0', '-139/15']])")
         self.assertEqual(repr(lower * upper), repr(permuted * matrix))
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             permuted, lower, upper = plu_factorization(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))
@@ -120,7 +120,7 @@ class TestMatrixFactorizations(unittest.TestCase):
             "Matrix([['1', '2', '3'], ['0', '1', '2/3'], ['0', '0', '1']])")
         self.assertEqual(repr(lower * diag * lower_t), repr(matrix))
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
+        matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             lower, diag, lower_t = ldlt_factorization(matrix)
         self.assertTrue("Matrix must be a square matrix." in str(c.exception))

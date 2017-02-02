@@ -90,10 +90,21 @@ def is_zero_vector(vector):
 def is_square_matrix(matrix):
     return num_rows(matrix) == num_cols(matrix)
 
+@assert_square_matrix
 def is_symmetric(matrix):
     for i in range(num_rows(matrix)):
         for j in range(i, num_cols(matrix)):
             if matrix[i][j] != matrix[j][i]:
+                return False
+    return True
+
+@assert_square_matrix
+def is_identity(matrix):
+    for i in range(num_rows(matrix)):
+        for j in range(num_cols(matrix)):
+            if i == j and matrix[i][j] != 1:
+                return False
+            if i != j and matrix[i][j] != 0:
                 return False
     return True
 

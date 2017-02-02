@@ -35,6 +35,47 @@ class TestMatrixOperations(unittest.TestCase):
         self.assertEqual(repr(matrix),
             "Matrix([['3', '3'], ['3', '3']])")
 
+    def test_is_square_matrix(self):
+        matrix = identity_matrix(3)
+        is_square = is_square_matrix(matrix)
+        self.assertEqual(repr(is_square), "True")
+
+        matrix = zero_matrix(2, 3)
+        is_square = is_square_matrix(matrix)
+        self.assertEqual(repr(is_square), "False")
+
+    def test_is_symmetric(self):
+        matrix = identity_matrix(3)
+        symmetric = is_symmetric(matrix)
+        self.assertEqual(repr(symmetric), "True")
+
+        matrix = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        symmetric = is_symmetric(matrix)
+        self.assertEqual(repr(symmetric), "False")
+
+        matrix = fill_matrix(2, 3, 1)
+        with self.assertRaises(DimensionError) as c:
+            symmetric = is_symmetric(matrix)
+        self.assertTrue("Matrix must be a square matrix." in str(c.exception))
+
+    def test_is_identity(self):
+        matrix = identity_matrix(3)
+        identity = is_identity(matrix)
+        self.assertEqual(repr(identity), "True")
+        
+        matrix = fill_matrix(2, 2, 1)
+        identity = is_identity(matrix)
+        self.assertEqual(repr(identity), "False")
+
+        matrix = fill_matrix(2, 2, 3)
+        identity = is_identity(matrix)
+        self.assertEqual(repr(identity), "False")
+
+        matrix = fill_matrix(2, 3, 1)
+        with self.assertRaises(DimensionError) as c:
+            identity = is_identity(matrix)
+        self.assertTrue("Matrix must be a square matrix." in str(c.exception))
+
     def test_dim(self):
         matrix = fill_matrix(4, 2, 0)
         dimensions = dim(matrix)
