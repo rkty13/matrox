@@ -67,6 +67,10 @@ class TestMatrixOperations(unittest.TestCase):
         identity = is_identity(matrix)
         self.assertEqual(repr(identity), "False")
 
+        matrix = fill_matrix(2, 2, 3)
+        identity = is_identity(matrix)
+        self.assertEqual(repr(identity), "False")
+
         matrix = fill_matrix(2, 3, 1)
         with self.assertRaises(DimensionError) as c:
             identity = is_identity(matrix)
