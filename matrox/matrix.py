@@ -97,6 +97,16 @@ def is_symmetric(matrix):
                 return False
     return True
 
+@assert_square_matrix
+def is_identity(matrix):
+    for i in range(num_rows(matrix)):
+        for j in range(num_cols(matrix)):
+            if i == j and matrix[i][j] != 1:
+                return False
+            if i != j and matrix[i][j] != 0:
+                return False
+    return True
+
 def num_rows(matrix):
     return len(matrix)
 
