@@ -12,5 +12,4 @@ class TestProperties(unittest.TestCase):
 
         matrix = fill_matrix(3, 3, 2)
         matrix_rank = rank(matrix)
-        print(ref(matrix))
         self.assertEqual(repr(matrix_rank), "1")
