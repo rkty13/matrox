@@ -45,9 +45,6 @@ def gaussian_elimination(matrix, reduced=True, history=False,
                 j += 1
                 continue
             sign = 1 if matrix_c[i][lead] < 0 == matrix_c[j][lead] < 0 else -1
-            if not matrix_c[i][lead]:
-                j += 1
-                continue
             m = sign * matrix_c[j][lead] / matrix_c[i][lead]
             matrix_c = row_op_add(matrix_c, i, j, m)
             if history:

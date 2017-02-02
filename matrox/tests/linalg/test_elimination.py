@@ -1,6 +1,6 @@
 import unittest
 
-from matrox import Matrix
+from matrox import Matrix, fill_matrix
 from matrox.linalg import *
 
 class TestMatrixElimination(unittest.TestCase):
@@ -43,7 +43,6 @@ class TestMatrixElimination(unittest.TestCase):
         self.assertEqual(repr(c_matrix),
             "Matrix([['1', '2/3', '1/3'], ['0', '0', '0']])")
 
-
     def test_rref(self):
         matrix = Matrix([[1, 2, 3], [4, 5, 6]], fraction=True)
         c_matrix, traceback, inverse_traceback = rref(matrix)
@@ -51,6 +50,20 @@ class TestMatrixElimination(unittest.TestCase):
             "Matrix([['1', '0', '-1'], ['0', '1', '2']])")
         self.assertEqual(repr(traceback), "[]")
         self.assertEqual(repr(inverse_traceback), "[]")
+
+        matrix = fill_matrix(3, 3, 2, fraction=True)
+        c_matrix, traceback, inverse_traceback = rref(matrix)
+        self.assertEqual(repr(c_matrix),
+            "Matrix([['1', '1', '1'], ['0', '0', '0'], ['0', '0', '0']])")
+        self.assertEqual(repr(traceback), "[]")
+        self.assertEqual(repr(inverse_traceback), "[]")
+
+        matrix = Matrix([[1, 0, 3], [0, 0, 0], [1, 0, 3]], fraction=True)
+        c_matrix, traceback, inverse_traceback = rref(matrix)
+        self.assertEqual(repr(c_matrix), 
+            "Matrix([['1', '0', '3'], ['0', '0', '0'], ['0', '0', '0']])")
+        self.assertEqual(repr(traceback), "[]")
+        self.assertEqual(repr(inverse_traceback), "[]")        
 
     def test_ref(self):
         matrix = Matrix([[1, 2, 3], [4, 5, 6]], fraction=True)
