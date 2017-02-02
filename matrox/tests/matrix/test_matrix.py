@@ -35,6 +35,11 @@ class TestMatrixOperations(unittest.TestCase):
         self.assertEqual(repr(matrix),
             "Matrix([['3', '3'], ['3', '3']])")
 
+    def test_dim(self):
+        matrix = fill_matrix(4, 2, 0)
+        dimensions = dim(matrix)
+        self.assertEqual(repr(dimensions), "(4, 2)")
+
     def test_augment(self):
         matrix_a = Matrix([[1, 2, 3], [4, 5, 6]])
         matrix_b = Matrix([[7], [8]])

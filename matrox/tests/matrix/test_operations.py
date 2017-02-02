@@ -52,11 +52,6 @@ class TestElementaryMatrixOperations(unittest.TestCase):
         self.assertEqual(repr(el_matrix * matrix),
             "Matrix([['1', '2', '3'], ['18', '21', '24'], ['7', '8', '9']])")
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
-        with self.assertRaises(DimensionError) as c:
-            el_matrix = el_matrix_add(matrix, 1, 1, 2)
-        self.assertTrue("Matrix must be a square matrix." in str(c.exception))
-
     def test_el_matrix_mult(self):
         matrix = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         el_matrix = el_matrix_mult(matrix, 1, 2)
@@ -65,11 +60,6 @@ class TestElementaryMatrixOperations(unittest.TestCase):
         self.assertEqual(repr(el_matrix * matrix),
             "Matrix([['1', '2', '3'], ['8', '10', '12'], ['7', '8', '9']])")
 
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
-        with self.assertRaises(DimensionError) as c:
-            el_matrix = el_matrix_mult(matrix, 1, 1)
-        self.assertTrue("Matrix must be a square matrix." in str(c.exception))
-
     def test_el_matrix_swap(self):
         matrix = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         el_matrix = el_matrix_swap(matrix, 1, 2)
@@ -77,8 +67,3 @@ class TestElementaryMatrixOperations(unittest.TestCase):
             "Matrix([['1', '0', '0'], ['0', '0', '1'], ['0', '1', '0']])")
         self.assertEqual(repr(el_matrix * matrix),
             "Matrix([['1', '2', '3'], ['7', '8', '9'], ['4', '5', '6']])")
-
-        matrix = Matrix([[1, 1, 1], [1, 1, 1]])
-        with self.assertRaises(DimensionError) as c:
-            el_matrix = el_matrix_swap(matrix, 0, 1)
-        self.assertTrue("Matrix must be a square matrix." in str(c.exception))
