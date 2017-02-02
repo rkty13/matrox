@@ -1,7 +1,6 @@
 from copy import deepcopy
 
 from matrox import (
-    augment,
     dim,
     el_matrix_add,
     el_matrix_mult,
