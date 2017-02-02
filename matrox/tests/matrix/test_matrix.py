@@ -81,6 +81,15 @@ class TestMatrixOperations(unittest.TestCase):
         dimensions = dim(matrix)
         self.assertEqual(repr(dimensions), "(4, 2)")
 
+    def test_diagonal(self):
+        matrix = identity_matrix(3)
+        diag = diagonal(matrix)
+        self.assertEqual(repr(diag), "Matrix([['1', '1', '1']])")
+
+        matrix = fill_matrix(2, 3, 2)
+        diag = diagonal(matrix)
+        self.assertEqual(repr(diag), "Matrix([['2', '2']])")
+
     def test_num_non_zero_rows(self):
         matrix = zero_matrix(3, 3)
         num = num_non_zero_rows(matrix)
@@ -169,3 +178,13 @@ class TestMatrixFunctions(unittest.TestCase):
         matrix_c = transpose(matrix)
         self.assertEqual(repr(matrix_c),
             "Matrix([['1', '4'], ['2', '5'], ['3', '6']])")
+
+        matrix = Matrix([[1, 2, 3]], fraction=True)
+        matrix_c = transpose(matrix)
+        self.assertEqual(repr(matrix_c),
+            "Matrix([['1'], ['2'], ['3']])")
+
+        matrix = Matrix([[1], [2], [3]], fraction=True)
+        matrix_c = transpose(matrix)
+        self.assertEqual(repr(matrix_c),
+            "Matrix([['1', '2', '3']])")

@@ -40,7 +40,7 @@ class Matrix(object):
         return type(self)(self._matrix)
 
     def __repr__(self):
-        return "%s(%s)" % (type(self).__name__, 
+        return "%s(%s)" % (type(self).__name__,
             str([[str(j) for j in i] for i in self._matrix]))
 
     def __add__(self, other):
@@ -116,6 +116,9 @@ def num_cols(matrix):
 
 def dim(matrix):
     return num_rows(matrix), num_cols(matrix)
+
+def diagonal(matrix):
+    return Matrix([[matrix[i][i] for i in range(num_rows(matrix))]])
 
 def num_non_zero_rows(matrix):
     num_non_zero = 0
