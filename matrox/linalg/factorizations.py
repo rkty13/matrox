@@ -2,13 +2,14 @@ from copy import deepcopy
 
 from matrox import (
     assert_square_matrix,
-    el_matrix_swap,
     identity_matrix,
     is_symmetric,
     num_rows,
     row_op_add,
     row_op_mult
 )
+
+from . import el_matrix_swap
 
 @assert_square_matrix
 def permute_matrix(matrix):
