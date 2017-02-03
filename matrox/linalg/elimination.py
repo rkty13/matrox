@@ -2,9 +2,6 @@ from copy import deepcopy
 
 from matrox import (
     dim,
-    el_matrix_add,
-    el_matrix_mult,
-    el_matrix_swap,
     identity_matrix,
     is_zero_vector,
     leading_term_index,
@@ -13,6 +10,8 @@ from matrox import (
     row_op_mult,
     row_op_swap
 )
+
+from . import el_matrix_add, el_matrix_mult, el_matrix_swap
 
 def rref(matrix, history=False, inverse_history=False):
     return gaussian_elimination(matrix, reduced=True, history=history,
