@@ -1,36 +1,30 @@
-import abc
+from copy import deepcopy
 
-class Vector(metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def __mul__(self, scalar):
-        return
+from matrox import (
+    leading_term_index,
+    zero_matrix,
+    num_rows,
+    num_cols,
+    Matrix
+)
 
-    @abc.abstractmethod
-    def __rmul__(self, scalar):
-        return
+from . import rref
 
-    @abc.abstractmethod
-    def __imul__(self, scalar):
-        return
+def null_basis(matrix):
+    U = rref(matrix)[0]
+    pivots = set()
+    for i in range(num_rows(U)):
+        pivot = leading_term_index(U[i])
+        if pivot != -1:
+            pivots.add(pivot)
+    free = { i for i in range(num_rows(U)) } - pivots
+    if len(free) == 0:
+        return []
 
-    @abc.abstractmethod
-    def __add__(self, right):
-        return
-
-    @abc.abstractmethod
-    def __radd__(self, left):
-        return
-
-    @abc.abstractmethod
-    def __iadd__(self, right):
-        return
-
-
-
-class VectorSpace(metaclass=abc.ABCMeta):
-    def __init__(self, vector=None):
-        self.vector = vector
-
-    @abc.abstractmethod
-    def zero_vector(self):
-        return self.vector(self.n)
+def back_substitution(U, x, b):
+    x_n = deepcopy(x)
+    for i in range(num_rows(U) - 1, -1, -1):
+        pivot = leading_term_index(U[i])
+        if pivot != -1:
+            x_n[pivot][0] = (b[i][0] - sum([x_n[j][0] * U[i][j] for j in range(num_rows(x_n))])) / U[i][pivot]
+    return x_n
