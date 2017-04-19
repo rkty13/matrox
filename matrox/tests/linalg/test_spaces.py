@@ -1,6 +1,6 @@
 import unittest
 
-from matrox import Matrix, fill_matrix
+from matrox import Matrix, identity_matrix
 from matrox.linalg import *
 
 class TestSpaces(unittest.TestCase):
@@ -12,6 +12,8 @@ class TestSpaces(unittest.TestCase):
                             [0, 0, 0, 0]], fraction=True)
         self.assertEqual(repr(null_basis(matrix_a)),
             "[Matrix([['0'], ['0'], ['1'], ['0']])]")
+        matrix_b = identity_matrix(3)
+        self.assertEqual(repr(null_basis(matrix_b)), "[]")
  
     def test_back_substitution(self):
         U = Matrix([[1, 1, 2, 3], [0, 0, 4, 4], [0, 0, 0, 0]], fraction=True)
