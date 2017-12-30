@@ -16,7 +16,6 @@ class TestSpaces(unittest.TestCase):
         U = Matrix([[1, 3, 2],
                     [2, 7, 4],
                     [1, 5, 2]], fraction=True)
-        print(column_space(U))
         self.assertEqual(repr(column_space(U)),
             "[Vector(['1', '2', '1']), Vector(['3', '7', '5'])]")
 

@@ -1,4 +1,6 @@
 from copy import deepcopy
+from fractions import Fraction
+
 from matrox import Matrix
 
 class Vector(Matrix):
