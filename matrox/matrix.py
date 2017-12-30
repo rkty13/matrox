@@ -16,6 +16,37 @@ def assert_square_matrix(func):
         return func(*args, **kwargs)
     return func_wrapper
 
+def size_constraint(*args, **kwargs):
+    def decorator(func):
+        def func_wrapper(*fargs, **fkwargs):
+            constraints = {}
+            for farg, arg in zip(fargs, args):
+                if isinstance(farg, Matrix) and isinstance(arg, dict):
+                    if 'rows' in arg.keys() or 'cols' in arg.keys():
+                        if isinstance(arg['rows'], int):
+                            if arg['rows'] != num_rows(farg):
+                                raise DimensionError()
+                        elif isinstance(arg['rows'], str):
+                            if arg['rows'] in constraints.keys() and \
+                                    constraints[arg['rows']] != num_rows(farg):
+                                raise DimensionError()
+                            else:
+                                constraints[arg['rows']] = num_rows(farg)
+                        if isinstance(arg['cols'], int):
+                            if arg['cols'] != num_cols(farg):
+                                raise DimensionError()
+                        elif isinstance(arg['cols'], str):
+                            if arg['cols'] in constraints.keys() and \
+                                    constraints[arg['cols']] != num_cols(farg):
+                                raise DimensionError()
+                            else:
+                                constraints[arg['cols']] = num_cols(farg)
+                    else:
+                        raise KeyError()
+            return func(*fargs, **fkwargs)
+        return func_wrapper
+    return decorator
+
 class Matrix(object):
     def __init__(self, data, fraction=False):
         self._matrix = []
@@ -147,6 +178,7 @@ def transpose(matrix):
             matrix_c[n][m] = deepcopy(matrix[m][n])
     return matrix_c
 
+@size_constraint({'rows': 'm', 'cols': 'n'}, {'rows': 'm', 'cols': 'n'})
 def add_matrices(matrix_a, matrix_b):
     matrix_c = zero_matrix(num_rows(matrix_a), num_cols(matrix_a))
     for m in range(num_rows(matrix_c)):
@@ -154,10 +186,12 @@ def add_matrices(matrix_a, matrix_b):
             matrix_c[m][n] = matrix_a[m][n] + matrix_b[m][n]
     return matrix_c
 
+@size_constraint({'rows': 'm', 'cols': 'n'}, {'rows': 'm', 'cols': 'n'})
 def subtract_matrices(matrix_a, matrix_b):
     negated = scalar_mult_matrix(matrix_b, -1)
     return add_matrices(matrix_a, negated)
 
+@size_constraint({'rows': 'm', 'cols': 'r'}, {'rows': 'r', 'cols': 'n'})
 def multiply_matrices(matrix_a, matrix_b):
     if isinstance(matrix_a, Number):
         return scalar_mult_matrix(matrix_b, matrix_a)
