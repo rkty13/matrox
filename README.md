@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rkty13/matrox.svg?branch=master)](https://travis-ci.org/rkty13/matrox) [![Coverage Status](https://coveralls.io/repos/github/rkty13/matrox/badge.svg?branch=master)](https://coveralls.io/github/rkty13/matrox?branch=master) [![PyPI](https://img.shields.io/pypi/pyversions/matrox.svg)](https://pypi.python.org/pypi/matrox)
 
-matrox is a linear algebra library. The purpose of this project is for my own educational value as I learn more about linear algebra. **This is not a production ready library.** The contents of this project will loosely follow the following resources:
+matrox is a linear algebra library. The purpose of this project is for my own educational value as I learn more about linear algebra. **This is not a production ready library.** All functions are meant to use my own implementations and are not necessarily the best way to write them. The contents of this project will loosely follow the following resources:
 
 * Linear Algebra and Its Applications - Gilbert Strang
 * Worldwide Differential Equations with Linear Algebra - Robert McOwen
