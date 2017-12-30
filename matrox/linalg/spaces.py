@@ -4,10 +4,21 @@ from matrox import (
     leading_term_index,
     num_rows,
     num_cols,
-    zero_matrix
+    transpose,
+    zero_matrix,
+    Vector
 )
 
 from . import rref
+
+def row_space(matrix):
+    U = rref(matrix)[0]
+    return [Vector(U[i]) for i in range(num_rows(U)) if leading_term_index(U[i]) >= 0]
+
+def column_space(matrix):
+    U = rref(matrix)[0]
+    matrix_t = transpose(matrix)
+    return [Vector(matrix_t[i]) for i in range(num_rows(U)) if leading_term_index(U[i]) >= 0]
 
 def null_basis(matrix):
     U = rref(matrix)[0]
